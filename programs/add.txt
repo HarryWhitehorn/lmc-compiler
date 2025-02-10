@@ -1,4 +1,4 @@
-LDA
+INP
 STA 99
 INP
 ADD 99

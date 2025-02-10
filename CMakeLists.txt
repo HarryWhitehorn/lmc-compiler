@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(Lmc VERSION 1.0)
+project(Lmc VERSION 1.0 LANGUAGES C)
 
 set(SRC_DIR "src")
 set(PARSER_DIR "${CMAKE_CURRENT_BINARY_DIR}")
@@ -15,5 +15,5 @@ flex_target(LEXER "${SRC_DIR}/lexer.l" "${LEXER_OUT}" DEFINES_FILE "${PARSER_DIR
 bison_target(PARSER "${SRC_DIR}/parser.y" "${PARSER_OUT}" DEFINES_FILE "${PARSER_DIR}/parser.h")
 add_flex_bison_dependency(LEXER PARSER)
 
-add_executable(lmc "${SRC_DIR}/main.cpp" "${LEXER_OUT}" "${PARSER_OUT}")
+add_executable(lmc "${SRC_DIR}/main.c" "${LEXER_OUT}" "${PARSER_OUT}")
 target_include_directories(lmc PRIVATE "${PARSER_DIR}")

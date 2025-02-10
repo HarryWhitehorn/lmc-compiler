@@ -5,6 +5,7 @@
 ## GNU
 
 [Flex/Bison Tutorial](https://aquamentus.com/flex_bison.html)
+[Simple Github Repo Example](https://github.com/IvanoBilenchi/flex-bison-example/tree/master)
 
 ### Lexer
 
@@ -14,14 +15,19 @@ Flex
 
 Bison
 
+#### Notes
+
+- Identifiers are in LIFO linked list
+    - TODO change to FIFO?
+- Instructions are FIFO linked list
+
 ## LLVM
 
 [Reddit Comment on AST->LLVM](https://www.reddit.com/r/Compilers/comments/xpem02/comment/iq4d22g/)
 
 ## TODO
 
-- Refactor entry point into main.cpp
-- Handle file input
+- Handle dynamic file input
 
 - VS Code plugin / QT Editor
     - Syntax Highlighting

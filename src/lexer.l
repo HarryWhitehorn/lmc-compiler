@@ -17,6 +17,7 @@ int line_num = 1;
 "BRP"       { return BRP; }
 "INP"       { return INP; }
 "OUT"       { return OUT; }
+"OTC"       { return OTC; }
 "HLT"       { return HLT; }
 "DAT"       { return DAT; }
 
@@ -24,6 +25,6 @@ int line_num = 1;
 [A-Za-z][A-Za-z0-9]*  { yylval.sval = strdup(yytext); return IDENTIFIER; }
 \n          { ++line_num; return ENDL; }
 [ \t]+      { /* Ignore spaces and tabs */ }
-.           { printf("Unrecognised token: %s\n", yytext); }
+.           { printf("Unrecognized token: %s\n", yytext); }
 "//".*      { yylval.sval = strdup(yytext); return COMMENT; }
 %%
