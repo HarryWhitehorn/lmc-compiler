@@ -7,6 +7,7 @@ int line_num = 1;
 %}
 %option nounistd
 %option noyywrap
+%option caseless
 %%
 "ADD"       { return ADD; }
 "SUB"       { return SUB; }
