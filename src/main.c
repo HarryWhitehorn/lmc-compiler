@@ -3,25 +3,31 @@
 #include "lexer.h"
 #include "parser.h"
 
-const char *FILENAME = "c:\\Users\\harry\\Documents\\GitHub\\lmc-compiler\\programs\\demo.txt";
+const char *INPUT_PATH = "c:\\Users\\harry\\Documents\\GitHub\\lmc-compiler\\programs\\demo.txt";
+const char *OUTPUT_PATH = "c:\\Users\\harry\\Documents\\GitHub\\lmc-compiler\\programs\\out.lmc";
 
 FILE* readFile(const char *filename){
-  FILE *f = fopen(filename, "r");
-  if (!f) {
+  FILE *fptr = fopen(filename, "r");
+  if (!fptr) {
     printf("Error opening file %s", filename);
     return NULL;
   }
-  return f;
+  return fptr;
 }
 
 int main(int, char**) {
-  FILE *f = readFile(FILENAME);
+  FILE *fptr = readFile(INPUT_PATH);
 
-  yyin = f;
+  yyin = fptr;
   
   yyparse();
   // printIdentifiers();
+  FILE *outFptr = fopen(OUTPUT_PATH, "w");
   printInstructions();
+  fprintInstructions(outFptr);
 
+  // tidy
+  fclose(fptr);
+  fclose(outFptr);
   return 0;
 }

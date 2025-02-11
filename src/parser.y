@@ -151,6 +151,26 @@ void printInstructions(){
   }
 }
 
+void fprintInstructions(FILE *fptr){
+  Instruction *inst = instructionsHead;
+  while (inst != NULL) {
+    switch (inst->oppType) {
+      case OT_NONE:
+        fprintf(fptr,"%03d\n", inst->opcode);
+        break;
+      case OT_LITERAL:
+        fprintf(fptr,"%d%02d\n", inst->opcode, inst->literalOperand);
+        break;
+      case OT_IDENT:
+        fprintf(fptr,"%d%02d\n", inst->opcode, *inst->identOperand);
+      default:
+        // throw error
+        break;
+    }
+    inst = inst->next;
+  }
+}
+
 %}
 
 %union {
