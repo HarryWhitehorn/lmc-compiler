@@ -1,44 +1,70 @@
+#include "cmdline.h"
 #include "compile.h"
 
-const char *INPUT_PATH = "../programs/demo.txt";
-const char *OUTPUT_PATH = "../programs/out.lmc";
-
-int temp = 0; // TODO debug: remove
-
-
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-  // argv[1] - input path
-  // argv[2] - output path
-  char *input;
-  char *output;
-  switch (argc)
-  {
-  case 1:
-    // No args; Use defaults
-    input = INPUT_PATH;
-    output = OUTPUT_PATH;
-    break;
-  case 2:
-    // Input; Use same path but change filetype for output
-    input = argv[1];
-    output = strdup(input);
-    output = strcat(output, ".lmc"); // TODO strip previous filetype
-    break;
-  case 3:
-    // Input and Output; Use args
-    input = argv[1];
-    output = argv[2];
-    break;
-  default:
-    // TODO: Raise Error / Error Handling
-    return -1;
-    break;
-  }
-  compileFromFile(input);
-  instructionToStdout();
-  printf("\nCompiled '%s' to '%s'", input, output);
+  struct gengetopt_args_info args;
 
+  if (cmdline_parser(argc, argv, &args) != 0)
+  {
+    fprintf(stderr, "Error parsing arguments\n");
+    return EXIT_FAILURE;
   }
-  return 0;
+
+  /* Filepaths */
+  // Input file
+  if (args.input_given)
+  {
+    compileFromFile(args.input_arg);
+    if (args.debug_flag)
+    {
+      printf("Input file: %s\n", args.input_arg);
+    }
+  }
+  else
+  {
+    fprintf(stderr, "No input file specified\n");
+    return EXIT_FAILURE;
+  }
+
+  // Output file
+  if (args.output_given)
+  {
+    if (args.debug_flag)
+    {
+      printf("Output file: %s\n", args.output_arg);
+    }
+    printf("Writing to %s\n", args.output_arg);
+    instructionsToFile(args.output_arg);
+  }
+
+  /* flags */
+  // debug
+  if (args.debug_flag)
+  {
+    printf("Debug flag enabled\n");
+  }
+
+  // print
+  if (args.print_flag)
+  {
+    if (args.debug_flag)
+    {
+      printf("Print flag enabled\n");
+    }
+    instructionToStdout();
+  }
+
+  // comments
+  if (args.comments_flag)
+  {
+    if (args.debug_flag)
+    {
+      printf("Comments flag enabled\n");
+      // TODO handle comments
+    }
+  }
+
+  cmdline_parser_free(&args);
+  return EXIT_SUCCESS;
 }
