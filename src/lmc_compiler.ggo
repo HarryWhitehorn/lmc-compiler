@@ -1,0 +1,11 @@
+package "lmc_compiler"
+version "1.0.0"
+purpose "'Compiles' from LMC mnemonics to numerical codes."
+usage "lmc_compiler -i <input> [options]"
+
+option "input" i "Path to the input file" string required
+option "output" o "Path to the output .lmc file" string optional
+
+option "debug" d "Prints additional debug information to stdout" flag off
+option "print" p "Prints the output of the compilation" flag on
+option "comments" c "Preserve comments in the output" flag off
