@@ -1,27 +1,44 @@
 #include "compile.h"
 
-FILE* openFile(const char *filename, const char *mode){
+FILE *openFile(const char *filename, const char *mode)
+{
     FILE *fptr = fopen(filename, mode);
-    if (!fptr) {
+    if (!fptr)
+    {
         printf("Error opening file '%s'\n", filename); // TODO: Raise Error / Error Handling
         return NULL;
     }
     return fptr;
 }
 
-int compile(const char *inputPath, const char *outputPath) {
+void compileFromFile(const char *inputPath)
+{
+    flushParser(); // TODO move to end of compile? prob not due to ability to dynamicly write to file/buffer after compile
     FILE *inFptr = openFile(inputPath, "r");
-    if (inFptr){
+    if (inFptr)
+    {
         yyin = inFptr;
         yyparse();
         fclose(inFptr);
-        FILE *outFptr = openFile(outputPath, "w");
-        if (outFptr) {
-        printInstructions();
+    }
+}
+
+void instructionsToFile(const char *outputPath)
+{
+    FILE *outFptr = openFile(outputPath, "w");
+    if (outFptr)
+    {
         fprintInstructions(outFptr);
         fclose(outFptr);
-        return 0;
-        }
     }
-    return 2;
+}
+
+void instructionsToBuffer(char *Buffer)
+{
+    sprintInstructions(Buffer);
+}
+
+void instructionToStdout()
+{
+    printInstructions();
 }

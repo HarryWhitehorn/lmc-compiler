@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #define YYDEBUG 1
+#define YYERROR_VERBOSE 1
 
 void yyerror(const char *s);
 int yylex();
@@ -52,13 +53,13 @@ Identifier* lookupIdentifier(const char *name) {
 Identifier* addIdentifier(char *name) {
   Identifier *lookup = lookupIdentifier(name);
   if (lookup) {
-    lookup->addr = line_num;
+    lookup->addr = line_num-1;
     return lookup;
   }
   else {
     Identifier *id = (Identifier *)malloc(sizeof(Identifier));
     id->name = name;
-    id->addr = line_num;
+    id->addr = line_num-1;
     id->next = identifiers;
     identifiers = id;
     return id;
@@ -84,6 +85,29 @@ void printIdentifiers() {
   while (id != NULL) {
     printf("DAT %s: %d\n", id->name, id->addr);
     id = id->next;
+  }
+}
+
+void deleteIdentifier(Identifier *id) {
+  if (id->name != NULL) {
+    free(id->name);
+  }
+  free(id);
+}
+
+void deleteIdentifiers() {
+  if (identifiers != NULL) {
+    Identifier *id = identifiers;
+    Identifier *next;
+    while (id != NULL) {
+      next = id->next;
+      deleteIdentifier(id);
+      id = next;
+    }
+    identifiers = NULL;
+  }
+  else{
+    // TODO raise error?
   }
 }
 
@@ -131,26 +155,6 @@ void addInstructionIdentifier(char *name) {
   instructionTail->oppType = OT_IDENT;
 }
 
-void printInstructions(){
-  Instruction *inst = instructionsHead;
-  while (inst != NULL) {
-    switch (inst->oppType) {
-      case OT_NONE:
-        printf("%03d\n", inst->opcode);
-        break;
-      case OT_LITERAL:
-        printf("%d%02d\n", inst->opcode, inst->literalOperand);
-        break;
-      case OT_IDENT:
-        printf("%d%02d\n", inst->opcode, *inst->identOperand);
-      default:
-        // throw error
-        break;
-    }
-    inst = inst->next;
-  }
-}
-
 void fprintInstructions(FILE *fptr){
   Instruction *inst = instructionsHead;
   while (inst != NULL) {
@@ -164,11 +168,65 @@ void fprintInstructions(FILE *fptr){
       case OT_IDENT:
         fprintf(fptr,"%d%02d\n", inst->opcode, *inst->identOperand);
       default:
-        // throw error
+        // TODO throw error
         break;
     }
     inst = inst->next;
   }
+}
+
+void printInstructions(){
+  // TODO? refactor *printInstructions into one function that takes a function as an input?
+  fprintInstructions(stdout);
+}
+
+void sprintInstructions(char *str) {
+  // TODO? use snprintf for safety?
+  Instruction *inst = instructionsHead;
+  int length = 0;
+  while (inst != NULL) {
+    switch (inst->oppType) {
+      case OT_NONE:
+        length += sprintf(str+length,"%03d\n", inst->opcode);
+        break;
+      case OT_LITERAL:
+        length += sprintf(str+length,"%d%02d\n", inst->opcode, inst->literalOperand);
+        break;
+      case OT_IDENT:
+        length += sprintf(str+length,"%d%02d\n", inst->opcode, *inst->identOperand);
+      default:
+        // TODO throw error
+        break;
+    }
+    inst = inst->next;
+  }
+}
+
+void deleteInstruction(Instruction *inst){
+  free(inst);
+}
+
+void deleteInstructions() {
+  if (instructionsHead != NULL) {
+    Instruction *inst = instructionsHead;
+    Instruction *next;
+    while (inst != NULL) {
+      next = inst->next;
+      deleteInstruction(inst);
+      inst = next;
+    }
+    instructionsHead = NULL;
+    instructionTail = NULL;
+    }
+  else {
+    // TODO raise error?
+  }
+}
+
+void flushParser() {
+  line_num = 0;
+  deleteIdentifiers();
+  deleteInstructions();
 }
 
 %}
@@ -192,9 +250,13 @@ void fprintInstructions(FILE *fptr){
 
 %%
 program:
-    program instruction ENDLS;
-    | instruction ENDLS;
+    program instruction_1 ENDLS;
+    | instruction_1 ENDLS;
     | ENDLS;
+    ;
+instruction_1:
+    | IDENTIFIER { addIdentifier($1); } instruction;
+    | instruction;
     ;
 instruction:
     ADD { addInstruction(OP_ADD); } value //printf("%d",OP_ADD);
@@ -208,10 +270,10 @@ instruction:
     | OUT { addInstruction(OP_OUT); } //printf("%d\n", OP_OUT);
     | OTC { addInstruction(OP_OTC); } //printf("%d\n", OP_OTC);
     | HLT { addInstruction(OP_HLT); } //printf("%d\n", OP_HLT);
-    | IDENTIFIER DAT NUMBER { addInstruction($3); addIdentifier($1); } //printf("DAT %s: %d\n", $1, $3);
-    | IDENTIFIER DAT { addInstruction(0); addIdentifier($1); } //printf("DAT %s\n", $1);
+    | IDENTIFIER DAT NUMBER { addIdentifier($1); addInstruction($3); } //printf("DAT %s: %d\n", $1, $3);
+    | IDENTIFIER DAT { addIdentifier($1); addInstruction(0); } //printf("DAT %s\n", $1);
     | COMMENT { ; } //printf("%s\n", $1); } //TODO optional comment adding (such that inline remains inline and rest at end)
-    ;
+    ; 
 value:
     NUMBER { addInstructionValue($1); } //printf("%d\n", $1);
     | IDENTIFIER { addInstructionIdentifier($1); } //printf(" IDENTIFIER %s\n", $1);  
@@ -223,5 +285,5 @@ ENDLS:
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Line %d: Error: %s\n", line_num, s);
+  fprintf(stderr, "Line %d: Error: %s\n", line_num, s);
 }

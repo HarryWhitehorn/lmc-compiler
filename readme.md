@@ -25,7 +25,39 @@ Bison
 
 [Reddit Comment on AST->LLVM](https://www.reddit.com/r/Compilers/comments/xpem02/comment/iq4d22g/)
 
+## Main
+
+### Inputs
+
+- input filepath
+    - required
+    - string
+- output filepath
+    - optional
+    - string
+
+### Outputs
+
+- print (stdout)
+    - default: true
+    - bool
+- file
+    - default: false
+    - implicit with output path
+    - requires string input
+- ~~buffer~~
+    - not from cli
+
+### Options
+
+- Comments
+    - default: false
+    - bool
+
 ## TODO
+
+- potential bug / discrepancy where a final dat may be a line later than needed.
+- ensure that identifiers and instructions are deleted after compile / on new compile
 
 - Handle dynamic file input
 

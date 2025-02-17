@@ -7,8 +7,14 @@
 #include "lexer.h"
 #include "parser.h"
 
-FILE* openFile(const char *filename, const char *mode);
+FILE *openFile(const char *filename, const char *mode);
 
-int compile(const char *inputPath, const char *outputPath);
+void compileFromFile(const char *inputPath);
+
+void instructionsToFile(const char *outputPath);
+
+void instructionsToBuffer(char *Buffer);
+
+void instructionToStdout();
 
 #endif
