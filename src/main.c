@@ -1,10 +1,6 @@
 #include "cmdline.h"
 #include "compile.h"
 
-const char *INPUT_PATH = "../programs/demo.txt";
-const char *OUTPUT_PATH = "../programs/out.lmc";
-
-
 int main(int argc, char *argv[])
 {
   struct gengetopt_args_info args;

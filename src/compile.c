@@ -5,7 +5,7 @@ FILE *openFile(const char *filename, const char *mode)
     FILE *fptr = fopen(filename, mode);
     if (!fptr)
     {
-        printf("Error opening file '%s'\n", filename); // TODO: Raise Error / Error Handling
+        printf("Error opening file '%s'\n", filename); // TODO Raise Error / Error Handling
         return NULL;
     }
     return fptr;
@@ -13,7 +13,7 @@ FILE *openFile(const char *filename, const char *mode)
 
 void compileFromFile(const char *inputPath)
 {
-    flushParser(); // TODO move to end of compile? prob not due to ability to dynamicly write to file/buffer after compile
+    flushParser();
     FILE *inFptr = openFile(inputPath, "r");
     if (inFptr)
     {

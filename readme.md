@@ -1,7 +1,5 @@
 # lmc compiler
 
-[Reddit Comment on Steps](https://www.reddit.com/r/ProgrammingLanguages/comments/1475h9o/comment/jntyywr/)
-
 ## GNU
 
 [Flex/Bison Tutorial](https://aquamentus.com/flex_bison.html)
@@ -11,7 +9,7 @@
 
 Flex
 
-### Passer (AST)
+### Passer
 
 Bison
 
@@ -21,48 +19,24 @@ Bison
     - TODO change to FIFO?
 - Instructions are FIFO linked list
 
-## LLVM
-
-[Reddit Comment on AST->LLVM](https://www.reddit.com/r/Compilers/comments/xpem02/comment/iq4d22g/)
-
 ## Main
 
-### Inputs
+```sh
+Usage: lmc_compiler -i <input> [options]
 
-- input filepath
-    - required
-    - string
-- output filepath
-    - optional
-    - string
+  -h, --help           Print help and exit
+  -V, --version        Print version and exit
+  -i, --input=STRING   Path to the input file
+  -o, --output=STRING  Path to the output .lmc file
+  -d, --debug          Prints additional debug information to stdout (default=off)
+  -p, --print          Prints the output of the compilation  (default=on)
+  -c, --comments       WIP: Preserve comments in the output  (default=off)  
+```
 
-### Outputs
+## todos
 
-- print (stdout)
-    - default: true
-    - bool
-- file
-    - default: false
-    - implicit with output path
-    - requires string input
-- ~~buffer~~
-    - not from cli
-
-### Options
-
-- Comments
-    - default: false
-    - bool
-
-## TODO
-
-- potential bug / discrepancy where a final dat may be a line later than needed.
-- ensure that identifiers and instructions are deleted after compile / on new compile
-
-- Handle dynamic file input
-
-- VS Code plugin / QT Editor
-    - Syntax Highlighting
-    - Linter
-- Compiler
-- Interpreter?
+- BUG potential bug / discrepancy where a final dat may be a line later than needed. Test further.
+- TODO Add comment handling.
+- TODO Use snprintf for safety?
+- TODO Error Raising where appropriate.
+- TODO Full comments.

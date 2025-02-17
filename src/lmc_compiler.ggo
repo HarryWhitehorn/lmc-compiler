@@ -8,4 +8,4 @@ option "output" o "Path to the output .lmc file" string optional
 
 option "debug" d "Prints additional debug information to stdout" flag off
 option "print" p "Prints the output of the compilation" flag on
-option "comments" c "Preserve comments in the output" flag off
+option "comments" c "WIP: Preserve comments in the output" flag off

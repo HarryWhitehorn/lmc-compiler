@@ -30,7 +30,8 @@ enum Opcode
 
 // IDENTIFIERS
 
-typedef struct Identifier {
+typedef struct Identifier
+{
   char *name;
   int addr;
   struct Identifier *next;
@@ -38,11 +39,14 @@ typedef struct Identifier {
 
 Identifier *identifiers = NULL;
 
-Identifier* lookupIdentifier(const char *name) {
+Identifier *lookupIdentifier(const char *name)
+{
   // returns pointer to Identifier if exists else NULL
   Identifier *id = identifiers;
-  while (id){
-    if (strcmp(id->name, name) == 0) {
+  while (id)
+  {
+    if (strcmp(id->name, name) == 0)
+    {
       return id;
     }
     id = id->next;
@@ -50,28 +54,34 @@ Identifier* lookupIdentifier(const char *name) {
   return NULL;
 }
 
-Identifier* addIdentifier(char *name) {
+Identifier *addIdentifier(char *name)
+{
   Identifier *lookup = lookupIdentifier(name);
-  if (lookup) {
-    lookup->addr = line_num-1;
+  if (lookup)
+  {
+    lookup->addr = line_num - 1;
     return lookup;
   }
-  else {
+  else
+  {
     Identifier *id = (Identifier *)malloc(sizeof(Identifier));
     id->name = name;
-    id->addr = line_num-1;
+    id->addr = line_num - 1;
     id->next = identifiers;
     identifiers = id;
     return id;
   }
 }
 
-Identifier* registerIdentifier(char *name) {
+Identifier *registerIdentifier(char *name)
+{
   Identifier *lookup = lookupIdentifier(name);
-  if (lookup) {
+  if (lookup)
+  {
     return lookup;
   }
-  else {
+  else
+  {
     Identifier *id = (Identifier *)malloc(sizeof(Identifier));
     id->name = name;
     id->next = identifiers;
@@ -80,46 +90,52 @@ Identifier* registerIdentifier(char *name) {
   }
 }
 
-void printIdentifiers() {
+void printIdentifiers()
+{
   Identifier *id = identifiers;
-  while (id != NULL) {
+  while (id != NULL)
+  {
     printf("DAT %s: %d\n", id->name, id->addr);
     id = id->next;
   }
 }
 
-void deleteIdentifier(Identifier *id) {
-  if (id->name != NULL) {
+void deleteIdentifier(Identifier *id)
+{
+  if (id->name != NULL)
+  {
     free(id->name);
   }
   free(id);
 }
 
-void deleteIdentifiers() {
-  if (identifiers != NULL) {
+void deleteIdentifiers()
+{
+  if (identifiers != NULL)
+  {
     Identifier *id = identifiers;
     Identifier *next;
-    while (id != NULL) {
+    while (id != NULL)
+    {
       next = id->next;
       deleteIdentifier(id);
       id = next;
     }
     identifiers = NULL;
   }
-  else{
-    // TODO raise error?
-  }
 }
 
 // INSTRUCTIONS
 
-enum OppType {
-  OT_NONE,
-  OT_LITERAL,
-  OT_IDENT,
+enum OppType
+{
+  OT_NONE, // No opp
+  OT_LITERAL, // Literal int opp
+  OT_IDENT, // Opp value from Identifier
 };
 
-typedef struct Instruction {
+typedef struct Instruction
+{
   int opcode;
   int oppType;
   int literalOperand;
@@ -130,100 +146,113 @@ typedef struct Instruction {
 Instruction *instructionsHead = NULL;
 Instruction *instructionTail = NULL;
 
-void addInstruction(int opcode) {
+void addInstruction(int opcode)
+{
   Instruction *newInstruction = (Instruction *)malloc(sizeof(Instruction));
   newInstruction->opcode = opcode;
   newInstruction->oppType = OT_NONE;
   newInstruction->next = NULL;
-  if (!instructionsHead) {
+  if (!instructionsHead)
+  {
     instructionsHead = newInstruction;
   }
-  else {
+  else
+  {
     instructionTail->next = newInstruction;
   }
   instructionTail = newInstruction;
 }
 
-void addInstructionValue(int operand) {
+void addInstructionValue(int operand)
+{
   instructionTail->literalOperand = operand;
   instructionTail->oppType = OT_LITERAL;
 }
 
-void addInstructionIdentifier(char *name) {
+void addInstructionIdentifier(char *name)
+{
   Identifier *id = registerIdentifier(name);
   instructionTail->identOperand = &id->addr;
   instructionTail->oppType = OT_IDENT;
 }
 
-void fprintInstructions(FILE *fptr){
+void fprintInstructions(FILE *fptr)
+{
   Instruction *inst = instructionsHead;
-  while (inst != NULL) {
-    switch (inst->oppType) {
-      case OT_NONE:
-        fprintf(fptr,"%03d\n", inst->opcode);
-        break;
-      case OT_LITERAL:
-        fprintf(fptr,"%d%02d\n", inst->opcode, inst->literalOperand);
-        break;
-      case OT_IDENT:
-        fprintf(fptr,"%d%02d\n", inst->opcode, *inst->identOperand);
-      default:
-        // TODO throw error
-        break;
+  while (inst != NULL)
+  {
+    switch (inst->oppType)
+    {
+    case OT_NONE:
+      fprintf(fptr, "%03d\n", inst->opcode);
+      break;
+    case OT_LITERAL:
+      fprintf(fptr, "%d%02d\n", inst->opcode, inst->literalOperand);
+      break;
+    case OT_IDENT:
+      fprintf(fptr, "%d%02d\n", inst->opcode, *inst->identOperand);
+    default:
+      // TODO Raise Error / Error Handling
+      break;
     }
     inst = inst->next;
   }
 }
 
-void printInstructions(){
-  // TODO? refactor *printInstructions into one function that takes a function as an input?
+void printInstructions()
+{
   fprintInstructions(stdout);
 }
 
-void sprintInstructions(char *str) {
+void sprintInstructions(char *str)
+{
   // TODO? use snprintf for safety?
   Instruction *inst = instructionsHead;
   int length = 0;
-  while (inst != NULL) {
-    switch (inst->oppType) {
-      case OT_NONE:
-        length += sprintf(str+length,"%03d\n", inst->opcode);
-        break;
-      case OT_LITERAL:
-        length += sprintf(str+length,"%d%02d\n", inst->opcode, inst->literalOperand);
-        break;
-      case OT_IDENT:
-        length += sprintf(str+length,"%d%02d\n", inst->opcode, *inst->identOperand);
-      default:
-        // TODO throw error
-        break;
+  while (inst != NULL)
+  {
+    switch (inst->oppType)
+    {
+    case OT_NONE:
+      length += sprintf(str + length, "%03d\n", inst->opcode);
+      break;
+    case OT_LITERAL:
+      length += sprintf(str + length, "%d%02d\n", inst->opcode, inst->literalOperand);
+      break;
+    case OT_IDENT:
+      length += sprintf(str + length, "%d%02d\n", inst->opcode, *inst->identOperand);
+    default:
+      // TODO Raise Error / Error Handling
+      break;
     }
     inst = inst->next;
   }
 }
 
-void deleteInstruction(Instruction *inst){
+void deleteInstruction(Instruction *inst)
+{
   free(inst);
 }
 
-void deleteInstructions() {
-  if (instructionsHead != NULL) {
+void deleteInstructions()
+{
+  if (instructionsHead != NULL)
+  {
     Instruction *inst = instructionsHead;
     Instruction *next;
-    while (inst != NULL) {
+    while (inst != NULL)
+    {
       next = inst->next;
       deleteInstruction(inst);
       inst = next;
     }
     instructionsHead = NULL;
     instructionTail = NULL;
-    }
-  else {
-    // TODO raise error?
   }
 }
 
-void flushParser() {
+void flushParser()
+{
   line_num = 0;
   deleteIdentifiers();
   deleteInstructions();
@@ -236,7 +265,7 @@ void flushParser() {
   char *sval;
 }
 
-%token ADD SUB 
+%token ADD SUB
 %token STA LDA
 %token BRA BRZ BRP
 %token INP OUT OTC
@@ -260,12 +289,12 @@ instruction_1:
     ;
 instruction:
     ADD { addInstruction(OP_ADD); } value //printf("%d",OP_ADD);
-    | SUB { addInstruction(OP_SUB); } value //printf("%d",OP_SUB); 
-    | STA { addInstruction(OP_STA); } value //printf("%d",OP_STA); 
-    | LDA { addInstruction(OP_LDA); } value //printf("%d",OP_LDA); 
-    | BRA { addInstruction(OP_BRA); } value //printf("%d",OP_BRA); 
-    | BRZ { addInstruction(OP_BRZ); } value //printf("%d",OP_BRZ); 
-    | BRP { addInstruction(OP_BRP); } value //printf("%d",OP_BRP); 
+    | SUB { addInstruction(OP_SUB); } value //printf("%d",OP_SUB);
+    | STA { addInstruction(OP_STA); } value //printf("%d",OP_STA);
+    | LDA { addInstruction(OP_LDA); } value //printf("%d",OP_LDA);
+    | BRA { addInstruction(OP_BRA); } value //printf("%d",OP_BRA);
+    | BRZ { addInstruction(OP_BRZ); } value //printf("%d",OP_BRZ);
+    | BRP { addInstruction(OP_BRP); } value //printf("%d",OP_BRP);
     | INP { addInstruction(OP_INP); } //printf("%d\n", OP_INP);
     | OUT { addInstruction(OP_OUT); } //printf("%d\n", OP_OUT);
     | OTC { addInstruction(OP_OTC); } //printf("%d\n", OP_OTC);
@@ -273,10 +302,10 @@ instruction:
     | IDENTIFIER DAT NUMBER { addIdentifier($1); addInstruction($3); } //printf("DAT %s: %d\n", $1, $3);
     | IDENTIFIER DAT { addIdentifier($1); addInstruction(0); } //printf("DAT %s\n", $1);
     | COMMENT { ; } //printf("%s\n", $1); } //TODO optional comment adding (such that inline remains inline and rest at end)
-    ; 
+    ;
 value:
     NUMBER { addInstructionValue($1); } //printf("%d\n", $1);
-    | IDENTIFIER { addInstructionIdentifier($1); } //printf(" IDENTIFIER %s\n", $1);  
+    | IDENTIFIER { addInstructionIdentifier($1); } //printf(" IDENTIFIER %s\n", $1);
     ;
 ENDLS:
     ENDL ENDLS
@@ -284,6 +313,7 @@ ENDLS:
     ;
 %%
 
-void yyerror(const char *s) {
+void yyerror(const char *s)
+{
   fprintf(stderr, "Line %d: Error: %s\n", line_num, s);
 }
