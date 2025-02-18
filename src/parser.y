@@ -288,24 +288,24 @@ instruction_1:
     | instruction;
     ;
 instruction:
-    ADD { addInstruction(OP_ADD); } value //printf("%d",OP_ADD);
-    | SUB { addInstruction(OP_SUB); } value //printf("%d",OP_SUB);
-    | STA { addInstruction(OP_STA); } value //printf("%d",OP_STA);
-    | LDA { addInstruction(OP_LDA); } value //printf("%d",OP_LDA);
-    | BRA { addInstruction(OP_BRA); } value //printf("%d",OP_BRA);
-    | BRZ { addInstruction(OP_BRZ); } value //printf("%d",OP_BRZ);
-    | BRP { addInstruction(OP_BRP); } value //printf("%d",OP_BRP);
-    | INP { addInstruction(OP_INP); } //printf("%d\n", OP_INP);
-    | OUT { addInstruction(OP_OUT); } //printf("%d\n", OP_OUT);
-    | OTC { addInstruction(OP_OTC); } //printf("%d\n", OP_OTC);
-    | HLT { addInstruction(OP_HLT); } //printf("%d\n", OP_HLT);
-    | IDENTIFIER DAT NUMBER { addIdentifier($1); addInstruction($3); } //printf("DAT %s: %d\n", $1, $3);
-    | IDENTIFIER DAT { addIdentifier($1); addInstruction(0); } //printf("DAT %s\n", $1);
-    | COMMENT { ; } //printf("%s\n", $1); } //TODO optional comment adding (such that inline remains inline and rest at end)
+    ADD { addInstruction(OP_ADD); } value
+    | SUB { addInstruction(OP_SUB); } value
+    | STA { addInstruction(OP_STA); } value
+    | LDA { addInstruction(OP_LDA); } value
+    | BRA { addInstruction(OP_BRA); } value
+    | BRZ { addInstruction(OP_BRZ); } value
+    | BRP { addInstruction(OP_BRP); } value
+    | INP { addInstruction(OP_INP); }
+    | OUT { addInstruction(OP_OUT); }
+    | OTC { addInstruction(OP_OTC); }
+    | HLT { addInstruction(OP_HLT); }
+    | IDENTIFIER DAT NUMBER { addIdentifier($1); addInstruction($3); }
+    | IDENTIFIER DAT { addIdentifier($1); addInstruction(0); }
+    | COMMENT { ; } //TODO optional comment adding (such that inline remains inline and rest at end)
     ;
 value:
-    NUMBER { addInstructionValue($1); } //printf("%d\n", $1);
-    | IDENTIFIER { addInstructionIdentifier($1); } //printf(" IDENTIFIER %s\n", $1);
+    NUMBER { addInstructionValue($1); }
+    | IDENTIFIER { addInstructionIdentifier($1); }
     ;
 ENDLS:
     ENDL ENDLS

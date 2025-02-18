@@ -1,25 +1,15 @@
 # lmc compiler
 
-## GNU
+A simple *compiler* for turning LMC [Mnemonic Instructions](https://en.wikipedia.org/wiki/Little_man_computer#Instructions) into decimal format.
 
-[Flex/Bison Tutorial](https://aquamentus.com/flex_bison.html)
-[Simple Github Repo Example](https://github.com/IvanoBilenchi/flex-bison-example/tree/master)
+The `/programs` folder holds some examples, with `.txt` showing Mnemonic format and `.lmc` showing the decimal format.
 
-### Lexer
+## Building
 
-Flex
+Requires Bison (3.0) and Flex (2.6).
+Requires [Gengetopts](https://www.gnu.org/software/gengetopt/gengetopt.html#Installation) (2.23).
 
-### Passer
-
-Bison
-
-#### Notes
-
-- Identifiers are in LIFO linked list
-    - TODO change to FIFO?
-- Instructions are FIFO linked list
-
-## Main
+## Usage
 
 ```sh
 Usage: lmc_compiler -i <input> [options]
@@ -40,3 +30,10 @@ Usage: lmc_compiler -i <input> [options]
 - TODO Use snprintf for safety?
 - TODO Error Raising where appropriate.
 - TODO Full comments.
+- TODO Write tests.
+- TODO Write readme.md
+
+## Appendix
+
+[Flex/Bison Tutorial](https://aquamentus.com/flex_bison.html)
+[Simple Github Repo Example](https://github.com/IvanoBilenchi/flex-bison-example/tree/master)
