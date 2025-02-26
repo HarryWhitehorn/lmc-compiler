@@ -15,6 +15,6 @@ void instructionsToFile(const char *outputPath);
 
 void instructionsToBuffer(char *Buffer);
 
-void instructionToStdout();
+void instructionsToStdout();
 
 #endif

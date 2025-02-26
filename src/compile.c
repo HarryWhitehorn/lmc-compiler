@@ -38,7 +38,7 @@ void instructionsToBuffer(char *Buffer)
     sprintInstructions(Buffer);
 }
 
-void instructionToStdout()
+void instructionsToStdout()
 {
     printInstructions();
 }
