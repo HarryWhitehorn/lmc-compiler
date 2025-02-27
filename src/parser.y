@@ -229,6 +229,32 @@ void sprintInstructions(char *str)
   }
 }
 
+void bufferInstructions(int *buffer)
+{
+  Instruction *inst = instructionsHead;
+  int index = 0;
+  while (inst != NULL)
+  {
+    switch (inst->oppType)
+    {
+    case OT_NONE:
+      buffer[index++] = inst->opcode;
+      break;
+    case OT_LITERAL:
+      buffer[index++] = inst->opcode * 100 + inst->literalOperand;
+      break;
+    case OT_IDENT:
+      buffer[index++] = inst->opcode * 100 + *inst->identOperand;
+      break;
+    default:
+      // TODO Raise Error / Error Handling
+      break;
+    }
+    inst = inst->next;
+  }
+}
+
+
 void deleteInstruction(Instruction *inst)
 {
   free(inst);

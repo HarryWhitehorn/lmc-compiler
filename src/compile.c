@@ -33,9 +33,14 @@ void instructionsToFile(const char *outputPath)
     }
 }
 
-void instructionsToBuffer(char *Buffer)
+void instructionsToCharBuffer(char *Buffer)
 {
     sprintInstructions(Buffer);
+}
+
+void instructionsToIntBuffer(int *Buffer)
+{
+    bufferInstructions(Buffer);
 }
 
 void instructionsToStdout()

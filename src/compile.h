@@ -13,7 +13,9 @@ void compileFromFile(const char *inputPath);
 
 void instructionsToFile(const char *outputPath);
 
-void instructionsToBuffer(char *Buffer);
+void instructionsToCharBuffer(char *Buffer);
+
+void instructionsToIntBuffer(int *Buffer);
 
 void instructionsToStdout();
 
