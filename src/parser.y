@@ -252,6 +252,7 @@ void bufferInstructions(int *buffer)
     }
     inst = inst->next;
   }
+  buffer[index++] = NULL;
 }
 
 
