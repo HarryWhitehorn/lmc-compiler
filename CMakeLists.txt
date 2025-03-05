@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 
 project(LMC_Compiler VERSION 1.0 LANGUAGES C)
 
-set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
+set(SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set(PARSER_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 set(GGO_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
@@ -16,6 +16,18 @@ flex_target(LEXER "${SRC_DIR}/lexer.l" "${LEXER_OUT}" DEFINES_FILE "${PARSER_DIR
 bison_target(PARSER "${SRC_DIR}/parser.y" "${PARSER_OUT}" DEFINES_FILE "${PARSER_DIR}/parser.h")
 add_flex_bison_dependency(LEXER PARSER)
 
+# --------------------- Create Static Library ---------------------
+add_library(lmc_compiler STATIC  
+    "${SRC_DIR}/compile.c" 
+    "${SRC_DIR}/compile.h"
+    "${LEXER_OUT}" "${PARSER_OUT}"
+)
+
+target_include_directories(lmc_compiler PUBLIC "${PARSER_DIR}")
+
+# --------------------- Create Executable ---------------------
+find_program(GENGETOPT_EXECUTABLE gengetopt)
+
 add_custom_command(
     OUTPUT "${GGO_DIR}/cmdline.c" "${GGO_DIR}/cmdline.h"
     COMMAND gengetopt < "${SRC_DIR}/lmc_compiler.ggo" --output-dir "${GGO_DIR}"
@@ -27,12 +39,13 @@ add_custom_target(gengetopt_target
     DEPENDS "${GGO_DIR}/cmdline.c" "${GGO_DIR}/cmdline.h"
 )
 
-add_executable(lmc_compiler "${SRC_DIR}/main.c" 
-    "${SRC_DIR}/compile.c" "${SRC_DIR}/compile.h"
-    "${LEXER_OUT}" "${PARSER_OUT}"
+add_executable(lmc_compiler_exec "${SRC_DIR}/main.c"
     "${GGO_DIR}/cmdline.c" "${GGO_DIR}/cmdline.h"
 )
+set_target_properties(lmc_compiler_exec PROPERTIES OUTPUT_NAME "lmc_compiler")
 
-target_include_directories(lmc_compiler PRIVATE "${PARSER_DIR}")
+target_link_libraries(lmc_compiler_exec PRIVATE lmc_compiler)
 
-add_dependencies(lmc_compiler gengetopt_target)
+target_include_directories(lmc_compiler_exec PRIVATE "${PARSER_DIR}")
+
+add_dependencies(lmc_compiler_exec gengetopt_target)

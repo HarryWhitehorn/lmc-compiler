@@ -23,6 +23,14 @@ void compileFromFile(const char *inputPath)
     }
 }
 
+void compileFromString(char *String)
+{
+    flushParser();
+    YY_BUFFER_STATE bufferState = yy_scan_string(String); // Must be null-terminated
+    yyparse();
+    yy_delete_buffer(bufferState);
+}
+
 void instructionsToFile(const char *outputPath)
 {
     FILE *outFptr = openFile(outputPath, "w");
@@ -33,12 +41,17 @@ void instructionsToFile(const char *outputPath)
     }
 }
 
-void instructionsToBuffer(char *Buffer)
+void instructionsToCharBuffer(char *Buffer)
 {
     sprintInstructions(Buffer);
 }
 
-void instructionToStdout()
+void instructionsToIntBuffer(int *Buffer)
+{
+    bufferInstructions(Buffer);
+}
+
+void instructionsToStdout()
 {
     printInstructions();
 }

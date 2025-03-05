@@ -11,10 +11,14 @@ FILE *openFile(const char *filename, const char *mode);
 
 void compileFromFile(const char *inputPath);
 
+void compileFromString(char *String);
+
 void instructionsToFile(const char *outputPath);
 
-void instructionsToBuffer(char *Buffer);
+void instructionsToCharBuffer(char *Buffer);
 
-void instructionToStdout();
+void instructionsToIntBuffer(int *Buffer);
+
+void instructionsToStdout();
 
 #endif

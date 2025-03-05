@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     {
       printf("Print flag enabled\n");
     }
-    instructionToStdout();
+    instructionsToStdout();
   }
 
   // comments
