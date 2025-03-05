@@ -11,9 +11,14 @@ FILE *openFile(const char *filename, const char *mode)
     return fptr;
 }
 
-void compileFromFile(const char *inputPath)
+void freeParser()
 {
     flushParser();
+}
+
+void compileFromFile(const char *inputPath)
+{
+    freeParser();
     FILE *inFptr = openFile(inputPath, "r");
     if (inFptr)
     {
@@ -25,8 +30,9 @@ void compileFromFile(const char *inputPath)
 
 void compileFromString(char *String)
 {
-    flushParser();
+    freeParser();
     YY_BUFFER_STATE bufferState = yy_scan_string(String); // Must be null-terminated
+    if (bufferState) {} // TODO Raise Error / Error Handling; check `bufferState` validity
     yyparse();
     yy_delete_buffer(bufferState);
 }

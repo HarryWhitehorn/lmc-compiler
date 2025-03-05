@@ -2,14 +2,23 @@
 
 A simple *compiler* for turning LMC [Mnemonic Instructions](https://en.wikipedia.org/wiki/Little_man_computer#Instructions) into decimal format.
 
-The `/programs` folder holds some examples, with `.txt` showing Mnemonic format and `.lmc` showing the decimal format.
+The `/programs` directory holds some examples, with `.txt` showing mnemonic format and `.lmc` showing the decimal format.
 
 ## Building
 
-Requires Bison (3.0) and Flex (2.6).
-Requires [Gengetopts](https://www.gnu.org/software/gengetopt/gengetopt.html#Installation) (2.23).
+### Library
+
+- [Bison](https://www.gnu.org/software/bison/) (3.0)
+- [Flex](https://www.gnu.org/software/flex/) (2.6)
+
+### Executable
+
+- Library requirements
+- [Gengetopts](https://www.gnu.org/software/gengetopt/gengetopt.html#Installation) (2.23)
 
 ## Usage
+
+### Command Line
 
 ```sh
 Usage: lmc_compiler -i <input> [options]
@@ -23,6 +32,78 @@ Usage: lmc_compiler -i <input> [options]
   -c, --comments       WIP: Preserve comments in the output  (default=off)  
 ```
 
+### Library
+
+#### Library Usage
+
+The input program must first be parsed using one of the following public methods from `compile.h`:
+
+```c
+void compileFromFile(const char *inputPath); // Reads a files contents
+
+void compileFromString(char *String); // Reads from a null-terminated string
+```
+
+The output program can then be accessed through any of the following public methods from `compile.h`:
+
+```c
+void instructionsToFile(const char *outputPath); // Writes to file
+
+void instructionsToCharBuffer(char *Buffer); // Writes instructions as strings to buffer
+
+void instructionsToIntBuffer(int *Buffer); // Writes instructions as ints to buffer
+
+void instructionsToStdout(); // Prints to stdout
+```
+
+Once a input program has been loaded, it can be outputted via any of the `instructionsTo` methods, repeatedly, until a new program is loaded using one of the `compileFrom` methods or the parser is reset using `freeParser`.
+
+```c
+void freeParser(); // Frees the current loaded instructions from memory 
+```
+
+#### CMakeLists.txt
+
+The library can be included in a CMakeLists.txt by using `FetchContent` as shown:
+
+```CMakeLists.txt
+include(FetchContent)
+
+FetchContent_Declare(
+    lmc_compiler
+    GIT_REPOSITORY https://github.com/HarryWhitehorn/lmc-compiler.git
+    GIT_TAG master
+)
+
+FetchContent_MakeAvailable(lmc_compiler)
+```
+
+#### Example
+
+```c
+#include "compile.h"
+
+int main(int argc, char *argv[])
+{
+  // Compile from string
+  char myInputString[] = "INP\nSTA 99\nINP\nADD 99\nOUT\nHLT\n";
+  compileFromString(myInputString);
+
+  // Write to buffer
+  int myOutputBuffer[100] = { 0 };
+  instructionsToIntBuffer(myOutputBuffer);
+
+  // Print buffer
+  size = sizeof(myOutputBuffer)/sizeof(myOutputBuffer[0]);
+  for (int i=0; i<size; i++)
+  {
+    printf("%03d\n", myOutputBuffer[i]); // force three digits with "%03d" for clarity
+  }
+
+  return 0;
+}
+```
+
 ## todos
 
 - BUG potential bug / discrepancy where a final dat may be a line later than needed. Test further.
@@ -32,6 +113,7 @@ Usage: lmc_compiler -i <input> [options]
 - TODO Full comments.
 - TODO Write tests.
 - TODO Write readme.md
+- TODO Modify CMakeLists.txt to be able to generate the library without the need for the exactable
 
 ## Appendix
 

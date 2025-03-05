@@ -9,16 +9,18 @@
 
 FILE *openFile(const char *filename, const char *mode);
 
-void compileFromFile(const char *inputPath);
+void freeParser(); // Frees the current loaded instructions from memory 
 
-void compileFromString(char *String);
+void compileFromFile(const char *inputPath); // Reads a files contents
 
-void instructionsToFile(const char *outputPath);
+void compileFromString(char *String); // Reads from a null-terminated string
 
-void instructionsToCharBuffer(char *Buffer);
+void instructionsToFile(const char *outputPath); // Writes to file
 
-void instructionsToIntBuffer(int *Buffer);
+void instructionsToCharBuffer(char *Buffer); // Writes instructions as strings to buffer
 
-void instructionsToStdout();
+void instructionsToIntBuffer(int *Buffer); // Writes instructions as ints to buffer
+
+void instructionsToStdout(); // Prints to stdout
 
 #endif
