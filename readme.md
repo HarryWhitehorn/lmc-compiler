@@ -2,6 +2,12 @@
 
 A simple *compiler* for turning LMC [Mnemonic Instructions](https://en.wikipedia.org/wiki/Little_man_computer#Instructions) into decimal format.
 
+Supports full instruction set as well as:
+
+| Numeric Code  | Mnemonic code  | Instruction  | Description  |
+|--- |--- |--- |--- |
+| 922  | OTC  | OUTPUT CHARACTER  | Copy the value from the accumulator to the OUTBOX converting to an ascii character  |
+
 The `/programs` directory holds some examples, with `.txt` showing mnemonic format and `.lmc` showing the decimal format.
 
 ## Building
