@@ -59,14 +59,14 @@ Identifier *addIdentifier(char *name)
   Identifier *lookup = lookupIdentifier(name);
   if (lookup)
   {
-    lookup->addr = line_num - 1;
+    lookup->addr = line_num - 1; // line_num is not zero indexed, where as, lmc memory is
     return lookup;
   }
   else
   {
     Identifier *id = (Identifier *)malloc(sizeof(Identifier));
     id->name = name;
-    id->addr = line_num - 1;
+    id->addr = line_num - 1; // line_num is not zero indexed, where as, lmc memory is
     id->next = identifiers;
     identifiers = id;
     return id;
@@ -280,7 +280,7 @@ void deleteInstructions()
 
 void flushParser()
 {
-  line_num = 0;
+  line_num = 1;
   deleteIdentifiers();
   deleteInstructions();
 }
