@@ -106,6 +106,9 @@ int main(int argc, char *argv[])
     printf("%03d\n", myOutputBuffer[i]); // force three digits with "%03d" for clarity
   }
 
+  // Free
+  freeParser();
+
   return 0;
 }
 ```
