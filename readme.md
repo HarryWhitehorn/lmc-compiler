@@ -118,11 +118,8 @@ int main(int argc, char *argv[])
 - BUG potential bug / discrepancy where a final dat may be a line later than needed. Test further.
 - TODO Add comment handling.
 - TODO Use snprintf for safety?
-- TODO Error Raising where appropriate.
-- TODO Full comments.
-- TODO Write tests.
-- TODO Write readme.md
-- TODO Modify CMakeLists.txt to be able to generate the library without the need for the exactable
+- TODO Exspand tests.
+- TODO Modify CMakeLists.txt to be able to generate the library without the need for the exactable.
 
 ## Appendix
 
